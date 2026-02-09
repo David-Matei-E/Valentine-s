@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>David ❤️ Miru</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+
+body{
+    height:100vh;
+    overflow:hidden;
+    background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* Cinematic Bars */
+.cinematic-bar{
+    position:fixed;
+    left:0;
+    width:100%;
+    height:0;
+    background:black;
+    z-index:50;
+    transition:height 1.5s ease;
+    pointer-events:none;
+}
+#barTop{top:0;}
+#barBottom{bottom:0;}
+.cinematic-bar.show{height:10%;}
+
+/* Star background */
+canvas{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+}
+
+/* Container */
+.container{
+    background:rgba(255,255,255,0.95);
+    padding:45px 30px;
+    border-radius:30px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    max-width:450px;
+    width:90%;
+    text-align:center;
+    z-index:10;
+    position:relative;
+    transition:1.2s ease;
+}
+
+.blur{
+    transform:scale(1.1);
+    opacity:0;
+    filter:blur(15px);
+}
+
+h1{
+    color:#e60073;
+    margin-bottom:30px;
+    font-size:1.7rem;
+}
+
+.buttons{position:relative;height:70px;}
+
+button{
+    padding:12px 25px;
+    border:none;
+    border-radius:30px;
+    font-size:1rem;
+    cursor:pointer;
+    position:absolute;
+    transition:0.3s ease;
+}
+
+#yesBtn{
+    background:linear-gradient(45deg,#ff4d88,#ff1a66);
+    color:white;
+    left:25%;
+    transform:translateX(-50%);
+}
+#yesBtn:hover{transform:translateX(-50%) scale(1.15);}
+
+#noBtn{
+    background:#aaa;
+    color:white;
+    left:75%;
+    transform:translateX(-50%);
+}
+
+/* Overlay */
+.overlay{
+    position:fixed;
+    inset:0;
+    background:radial-gradient(circle at center, rgba(0,0,0,0.5), rgba(0,0,0,0.95));
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    color:white;
+    opacity:0;
+    pointer-events:none;
+    transition:1.5s ease;
+    z-index:40;
+    padding:20px;
+}
+.overlay.show{opacity:1;}
+
+#letter{
+    max-width:650px;
+    font-size:1.4rem;
+    line-height:1.8;
+}
+
+/* Gold particles */
+.particle{
+    position:fixed;
+    width:10px;
+    height:10px;
+    background:radial-gradient(circle,#ffd700,#ffae00);
+    border-radius:50%;
+    pointer-events:none;
+    z-index:30;
+    opacity:0.9;
+    transition:transform 6s linear, opacity 6s;
+}
+
+/* Final white screen */
+.whiteScreen{
+    position:fixed;
+    inset:0;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    opacity:0;
+    pointer-events:none;
+    transition:2s ease;
+    z-index:60;
+}
+.whiteScreen.show{
+    opacity:1;
+    pointer-events:auto;
+}
+
+.whiteScreen h1{
+    font-size:4rem;
+    color:#e60073;
+}
+
+.whiteScreen p{
+    margin-top:20px;
+    font-size:1.6rem;
+}
+
+@media(max-width:480px){
+.whiteScreen h1{font-size:2.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="barTop" class="cinematic-bar"></div>
+<div id="barBottom" class="cinematic-bar"></div>
+
+<canvas id="stars"></canvas>
+
+<!-- Muzică FIXED -->
+<audio id="bgMusic" preload="auto">
+<source src="https://cdn.pixabay.com/download/audio/2022/10/30/audio_946f3b9c27.mp3?filename=romantic-piano-ambient-124008.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container" id="mainBox">
+<h1>Miru, vrei să fii iubita mea de Valentine's Day?</h1>
+<div class="buttons">
+<button id="yesBtn">Da</button>
+<button id="noBtn">Nu</button>
+</div>
+</div>
+
+<div class="overlay" id="overlay">
+<div id="letter"></div>
+</div>
+
+<div class="whiteScreen" id="whiteScreen">
+<h1>TE IUBESC ❤️</h1>
+<p>David & Miru — din 2026 până la sfârșitul vieții</p>
+</div>
+
+<script>
+/* STARFIELD */
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let stars=[];
+for(let i=0;i<120;i++){
+stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="white";
+stars.forEach(star=>{
+ctx.beginPath();
+ctx.arc(star.x,star.y,star.r,0,Math.PI*2);
+ctx.fill();
+});
+requestAnimationFrame(draw);
+}
+draw();
+
+/* ELEMENTS */
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const box=document.getElementById("mainBox");
+const overlay=document.getElementById("overlay");
+const letter=document.getElementById("letter");
+const whiteScreen=document.getElementById("whiteScreen");
+const music=document.getElementById("bgMusic");
+const barTop=document.getElementById("barTop");
+const barBottom=document.getElementById("barBottom");
+
+/* MOVE NO */
+function moveButton(){
+const maxX=box.offsetWidth-noBtn.offsetWidth;
+const maxY=70-noBtn.offsetHeight;
+noBtn.style.left=Math.random()*maxX+"px";
+noBtn.style.top=Math.random()*maxY+"px";
+}
+noBtn.addEventListener("mouseover",moveButton);
+noBtn.addEventListener("touchstart",moveButton);
+
+/* PARTICLES */
+function createParticles(){
+for(let i=0;i<100;i++){
+let p=document.createElement("div");
+p.classList.add("particle");
+p.style.left=Math.random()*100+"vw";
+p.style.top="-10px";
+document.body.appendChild(p);
+setTimeout(()=>{
+p.style.transform=`translateY(120vh)`;
+p.style.opacity="0";
+},10);
+setTimeout(()=>p.remove(),6000);
+}
+}
+
+/* TYPEWRITER TEXT (textul precedent restaurat) */
+function typeWriter(text,i=0){
+if(i<text.length){
+letter.innerHTML+=text.charAt(i);
+setTimeout(()=>typeWriter(text,i+1),40);
+}
+}
+
+/* CLICK YES */
+yesBtn.addEventListener("click",()=>{
+music.volume=0.6;
+music.currentTime = 0;
+music.play().then(()=>{
+music.loop = true;
+}).catch(e=>{
+console.log("Autoplay blocat:", e);
+});
+
+barTop.classList.add("show");
+barBottom.classList.add("show");
+box.classList.add("blur");
+overlay.classList.add("show");
+createParticles();
+
+const text=`Miru...
+
+Astăzi nu îți cer doar să fii iubita mea.
+
+Îți ofer inima mea,
+timpul meu,
+viitorul meu.
+
+Și dacă există un "pentru totdeauna",
+vreau să fie cu tine ❤️`;
+
+setTimeout(()=>typeWriter(text),1500);
+
+setTimeout(()=>{
+whiteScreen.classList.add("show");
+},12000);
+});
+</script>
+
+</body>
+</html>
